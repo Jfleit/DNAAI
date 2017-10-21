@@ -20,7 +20,7 @@ public class Splashscreen extends Activity {
             @Override
             public void run() {
                 try{
-                    sleep(3500);
+                    sleep(100);
                 } catch (InterruptedException e) {
                     //e.printStackTrace();
                 } finally {
