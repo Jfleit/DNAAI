@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "534789814316",
+    "firebase_url": "https://dnaai-ecfd5.firebaseio.com",
+    "project_id": "dnaai-ecfd5",
+    "storage_bucket": "dnaai-ecfd5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:534789814316:android:55fc7ab664d327c5",
+        "android_client_info": {
+          "package_name": "com.dnaai"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "534789814316-4do5iljnu89rl8vug3pbv31fgili315g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dnaai",
+            "certificate_hash": "0386ac4afb67bc7812d679fef87f385527e6b903"
+          }
+        },
+        {
+          "client_id": "534789814316-i48r5m023j620cn9j82u2db9b6k42iav.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAN9T7VbqDy3xbEwjkGeNXa_cnqKA6Tt-4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "534789814316-i48r5m023j620cn9j82u2db9b6k42iav.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
