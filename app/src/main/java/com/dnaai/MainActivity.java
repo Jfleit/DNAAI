@@ -2,6 +2,8 @@ package com.dnaai;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
