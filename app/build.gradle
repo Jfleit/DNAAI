@@ -10,7 +10,13 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled = true
     }
+
+    packagingOptions {
+        pickFirst  'META-INF/*'
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -30,6 +36,10 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.theneura:android-sdk:+'
     compile 'com.google.firebase:firebase-messaging:10.2.0'
+    compile 'com.squareup.okhttp:okhttp:+'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.7.3'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.7.3'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.3'
     testCompile 'junit:junit:4.12'
 }
 
