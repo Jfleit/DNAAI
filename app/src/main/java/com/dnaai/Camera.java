@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpTransport;
@@ -28,6 +29,14 @@ import com.google.api.services.vision.v1.model.BatchAnnotateImagesResponse;
 import com.google.api.services.vision.v1.model.EntityAnnotation;
 import com.google.api.services.vision.v1.model.Feature;
 import com.google.api.services.vision.v1.model.Image;
+import com.google.api.services.vision.v1.model.SafeSearchAnnotation;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
+
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -35,9 +44,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import JSONWrappers.PictureResultJSON;
+
 public class Camera extends AppCompatActivity {
     private static final String CLOUD_VISION_API_KEY = "AIzaSyDJ0l7Bh5BnJ_WlyE9aVNamEAacbMrP9Z4";
     public static final String FILE_NAME = "temp.jpg";
+    public String string1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +64,7 @@ public class Camera extends AppCompatActivity {
             }
 
         });
+
     }
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private ImageView mImageView;
@@ -68,6 +81,42 @@ public class Camera extends AppCompatActivity {
         return new File(dir, FILE_NAME);
     }
 
+    private class asynchHTTPRequest extends AsyncTask<Object, Object, Object> {
+        private String result;
+        public asynchHTTPRequest(String result){
+            this.result = result;
+        }
+        @Override
+        public Object doInBackground(Object[] params) {
+
+            String url = "http://7561f61d.ngrok.io/neura/webhook/";
+            OkHttpClient client = new OkHttpClient();
+            MediaType useTypeJSON = MediaType.parse("application/json; charset=utf-8");
+
+            try
+
+            {
+                ObjectMapper mapper = new ObjectMapper();
+                PictureResultJSON json = new PictureResultJSON();
+                json.setResult(string1);
+                String parsedToString = mapper.writeValueAsString(json);
+                JSONObject responseJSON = new JSONObject(parsedToString);
+                RequestBody requestBody = RequestBody.create(useTypeJSON, responseJSON.toString());
+                Request httpRequest = new Request.Builder()
+                        .url(url)
+                        .post(requestBody)
+                        .build();
+
+                Response response = client.newCall(httpRequest).execute();
+                System.out.println(response.toString());
+            } catch (Exception e){
+
+            }
+            return null;
+        }
+
+
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
@@ -77,10 +126,13 @@ public class Camera extends AppCompatActivity {
             mImageView = (ImageView) findViewById(R.id.imagething);
             mImageView.setImageBitmap(imageBitmap);
             String result = uploadImage(imageBitmap);
+            System.out.println(string1);
+            new asynchHTTPRequest(string1).execute();
             //pass result to the food API HERE
             TextView tv1 = (TextView)findViewById(R.id.textView2);
             tv1.setText(result);
             setContentView(R.layout.activity_camera);
+            finish();
         }
 
     }
@@ -137,9 +189,27 @@ public class Camera extends AppCompatActivity {
                     Log.d("ninth","gZipped");
                     BatchAnnotateImagesResponse response = annotateRequest.execute();
                     Log.d("tenth","imageResponse");
-                    Log.d("answer",convertResponseToString(response));
+                    convertResponseToString(response);
+                    Log.d("answer",string1);
 
-                    return convertResponseToString(response);
+                    return null;
+                    /*String message = "";
+
+                    List<EntityAnnotation> labels = response.getResponses().get(0).getLabelAnnotations();
+
+                    if (labels != null) {
+                        for (EntityAnnotation label : labels) {
+                            //message += String.format(Locale.US, "%.3f: %s", label.getScore(), label.getDescription());
+                            message += label.getDescription();
+                            //message += "\n";
+                            return message;
+                            //return message;
+                        }
+                    }
+                    else {
+                        return message;
+                    }
+                    return message;*/
 
                 } catch (GoogleJsonResponseException e) {
                     Log.d("JRE", "failed to make API request because " + e.getContent());
@@ -147,17 +217,13 @@ public class Camera extends AppCompatActivity {
                     Log.d("IOE", "failed to make API request because of other IOException " +
                             e.getMessage());
                 }
-                 finally {
-                    Log.d("finally","over");
 
-                    //return "Cloud Vision API request failed. Check logs for details.";
-                }
                 return "Cloud Vision API request failed. Check logs for details.";
             }
             //this oesn't work
             protected void onPostExecute(String result) {
                 //THIS IS WHERE WE PARSE/PASS THE STRING TO API #2--Nutrition
-                Log.println(Log.DEBUG,"editing",result);
+//                Log.println(Log.DEBUG,"editing",result);
                 TextView tv1 = (TextView)findViewById(R.id.textView2);
                 tv1.setText(result);
                 setContentView(R.layout.activity_camera);
@@ -168,30 +234,23 @@ public class Camera extends AppCompatActivity {
 
     //should just give us the description
     private String convertResponseToString(BatchAnnotateImagesResponse response) {
-        String message = "";
 
         List<EntityAnnotation> labels = response.getResponses().get(0).getLabelAnnotations();
 
         if (labels != null) {
-            for (EntityAnnotation label : labels) {
-                //message += String.format(Locale.US, "%.3f: %s", label.getScore(), label.getDescription());
-                message += label.getDescription();
-                //message += "\n";
-                return message;
-            }
-        } else {
-            message += "nothing";
+            EntityAnnotation entity = labels.get(0);
+            string1=entity.getDescription();
+        }
+        else {
+            return null;
         }
 
-        return message;
+        return null;
     }
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
+
             super.onBackPressed();
-        }
+
     }
 }
