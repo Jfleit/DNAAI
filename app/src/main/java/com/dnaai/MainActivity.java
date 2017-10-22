@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity
 
         mNeuraApiClient.simulateAnEvent();
         new asynchHTTPRequest().execute();
-
     }
 
     private class asynchHTTPRequest extends AsyncTask<Object, Object, Object> {
