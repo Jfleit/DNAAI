@@ -1,30 +1,21 @@
 package com.dnaai;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.neura.standalonesdk.events.NeuraEvent;
 import com.neura.standalonesdk.events.NeuraEventCallBack;
 import com.neura.standalonesdk.events.NeuraPushCommandFactory;
-import com.squareup.okhttp.HttpUrl;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
-
-import org.json.JSONObject;
-
-import java.io.IOException;
-
-import JSONWrappers.EventData;
-import JSONWrappers.NeuraWrapper;
 
 public class FirebaseMessageService extends FirebaseMessagingService {
 //    private static final MediaType useTypeJSON = MediaType.parse("application/json; charset=utf-8");
 
     @Override
     public void onMessageReceived(RemoteMessage message) {
+
+        if (message.getData().size() > 0) {
+            //do stuff with it--UI or whatever
+        }
+
         boolean isNeuraPush = NeuraPushCommandFactory.getInstance().isNeuraPush(getApplicationContext(), message.getData(), new NeuraEventCallBack() {
             @Override
             public void neuraEventDetected(NeuraEvent event) {

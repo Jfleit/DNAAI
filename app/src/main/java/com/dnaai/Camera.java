@@ -6,8 +6,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -29,7 +27,6 @@ import com.google.api.services.vision.v1.model.BatchAnnotateImagesResponse;
 import com.google.api.services.vision.v1.model.EntityAnnotation;
 import com.google.api.services.vision.v1.model.Feature;
 import com.google.api.services.vision.v1.model.Image;
-import com.google.api.services.vision.v1.model.SafeSearchAnnotation;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -175,7 +172,11 @@ public class Camera extends AppCompatActivity {
                             Feature labelDetection = new Feature();
                             labelDetection.setType("LABEL_DETECTION");
                             labelDetection.setMaxResults(10);
-                            add(labelDetection);
+                            /*add(labelDetection);
+                            Feature logoDetection = new Feature();
+                            logoDetection.setType("LOGO_DETECTION");
+                            logoDetection.setMaxResults(12);
+                            add(logoDetection);*/
                         }});
 
                         // Add the list of one thing to the request
@@ -242,6 +243,15 @@ public class Camera extends AppCompatActivity {
             EntityAnnotation entity = labels.get(i);
             string1 = string1 + "," + entity.getDescription();
         }
+
+       /* string1 += "\n";
+
+        List<EntityAnnotation> actuals = response.getResponses().get(1).getLabelAnnotations();
+        for(int i = 0; i < actuals.size(); i++) {
+            EntityAnnotation entity = actuals.get(i);
+            string1 = string1 + "," + entity.getDescription();
+        }
+        */
         /*
         if (labels != null) {
             EntityAnnotation entity = labels.get(0);
