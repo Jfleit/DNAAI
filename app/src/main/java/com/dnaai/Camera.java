@@ -144,20 +144,20 @@ public class Camera extends AppCompatActivity {
                 try {
                     HttpTransport httpTransport = AndroidHttp.newCompatibleTransport();
                     JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
-                    //Log.d("first","two lines in");
+
                     VisionRequestInitializer requestInitializer = new VisionRequestInitializer(CLOUD_VISION_API_KEY) {
                     };
 
                     Vision.Builder builder = new Vision.Builder(httpTransport, jsonFactory, null);
                     builder.setVisionRequestInitializer(requestInitializer);
-                    //Log.d("second","five lines in");
+
                     Vision vision = builder.build();
 
                     BatchAnnotateImagesRequest batchAnnotateImagesRequest =
                             new BatchAnnotateImagesRequest();
                     batchAnnotateImagesRequest.setRequests(new ArrayList<AnnotateImageRequest>() {{
                         AnnotateImageRequest annotateImageRequest = new AnnotateImageRequest();
-                    //Log.d("third","eight lines in");
+
                         // Add the image
                         Image base64EncodedImage = new Image();
                         // Convert the bitmap to a JPEG
@@ -165,11 +165,11 @@ public class Camera extends AppCompatActivity {
                         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
                         byte[] imageBytes = byteArrayOutputStream.toByteArray();
-                    //Log.d("fourth","converted");
+
                         // Base64 encode the JPEG
                         base64EncodedImage.encodeContent(imageBytes);
                         annotateImageRequest.setImage(base64EncodedImage);
-                    //Log.d("fifth","encoded");
+
                         // add the features we want
                         annotateImageRequest.setFeatures(new ArrayList<Feature>() {{
                             Feature labelDetection = new Feature();
@@ -180,17 +180,17 @@ public class Camera extends AppCompatActivity {
 
                         // Add the list of one thing to the request
                         add(annotateImageRequest);
-                        //Log.d("sixth","annotated");
+
                     }});
-                    Log.d("seventh","afterFirst");
+
                         Vision.Images.Annotate annotateRequest = vision.images().annotate(batchAnnotateImagesRequest);
-                    Log.d("eigth","vision.images.annotated");
+
                     annotateRequest.setDisableGZipContent(true);
-                    Log.d("ninth","gZipped");
+
                     BatchAnnotateImagesResponse response = annotateRequest.execute();
-                    Log.d("tenth","imageResponse");
+
                     convertResponseToString(response);
-                    Log.d("answer",string1);
+
 
                     return null;
                     /*String message = "";
@@ -236,7 +236,13 @@ public class Camera extends AppCompatActivity {
     private String convertResponseToString(BatchAnnotateImagesResponse response) {
 
         List<EntityAnnotation> labels = response.getResponses().get(0).getLabelAnnotations();
+        //if (labels == null) return null;
 
+        for(int i = 0; i < labels.size(); i++) {
+            EntityAnnotation entity = labels.get(i);
+            string1 = string1 + "," + entity.getDescription();
+        }
+        /*
         if (labels != null) {
             EntityAnnotation entity = labels.get(0);
             string1=entity.getDescription();
@@ -244,9 +250,10 @@ public class Camera extends AppCompatActivity {
         else {
             return null;
         }
-
+        */
         return null;
     }
+
     @Override
     public void onBackPressed() {
 
